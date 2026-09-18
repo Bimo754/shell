@@ -1,0 +1,10 @@
+[Unit]
+Description=Rotate Caelestia Wallpaper every 15 minutes
+
+[Timer]
+OnStartupSec=1m
+OnUnitActiveSec=15m
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target
