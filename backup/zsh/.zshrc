@@ -228,6 +228,7 @@ target() {
 
 # Package Management Shortcuts
 alias update='sudo pacman -Syu && yay -Sua'
+alias update-shell='bash ~/Desktop/Github/shell/update.sh'
 alias p-in='sudo pacman -S'
 alias p-rm='sudo pacman -Rns'
 alias y-in='yay -S'

@@ -12,9 +12,10 @@ This folder contains a complete backup of all custom desktop, terminal, shell, w
 | **Wallpaper Timer** | `systemd/user/*` | `~/.config/systemd/user/` | Systemd service & timer automatically rotating wallpapers every 15 minutes (`caelestia wallpaper -r`) |
 | **Zsh** | `zsh/.zshrc` | `~/.zshrc` | Cyber high-contrast prompt, execution timer, directory fill hairline, case-insensitive tab completion, Ctrl+Arrow/Alt+Arrow word jumping, pentest aliases |
 | **Kitty** | `kitty/kitty.conf`<br>`kitty/theme.conf` | `~/.config/kitty/` | Font size 13.0, padding, cursor, cyber colors, Zsh shell integration |
-| **Caelestia** | `caelestia/shell.json`<br>`caelestia/hypr-vars.lua`<br>`caelestia/monitors/` | `~/.config/caelestia/` | Audio status icon enabled, bar settings, app overrides (`Return` keybind, brave, dolphin, kitty) |
-| **Hyprland** | `hypr/*` | `~/.config/hypr/` | Full Hyprland setup, `hyprland.lua`, `hyprland-gui.lua`, `scheme/`, `keybinds.lua`, `rules.lua` |
+| **Caelestia** | `caelestia/shell.json`<br>`caelestia/hypr-vars.lua`<br>`caelestia/hypr-user.lua`<br>`caelestia/monitors/` | `~/.config/caelestia/` | Audio status icon enabled, bar settings, app overrides (`Return` keybind, brave, dolphin, kitty), user overrides (Windscribe autosizing float) |
+| **Hyprland** | `hypr/*` | `~/.config/hypr/` | Full Hyprland setup, `hyprland.lua`, `hyprland-gui.lua`, `scheme/`, `keybinds.lua`, `rules.lua` (with floating app rules) |
 | **Spotify** | `spotify/spotify-flags.conf` | `~/.config/spotify-flags.conf` | Ozone Wayland flags (`UseOzonePlatform`, `wayland`) for crisp, non-pixelated native rendering |
+| **SDDM Login** | `sddm/sugar-candy/`<br>`sddm/install-theme.sh` | `/usr/share/sddm/themes/sugar-candy/`<br>`/etc/sddm.conf.d/theme.conf` | Centered login credentials, pure black background with randomized skull animations (inner 60% focus, 5s interval) |
 | **Timezone** | *(Configured via script)* | `/etc/localtime` | Automatically sets system clock to **Turkiye Time** (`Europe/Istanbul`, UTC+3) |
 
 ---

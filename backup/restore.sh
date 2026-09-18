@@ -67,7 +67,7 @@ if [ -d "${HOME}/.config/caelestia" ] && [ "$(ls -A "${HOME}/.config/caelestia" 
     warn "Existing Caelestia config backed up to ~/.config/caelestia.bak.${TIMESTAMP}"
 fi
 cp -rf "${SCRIPT_DIR}/caelestia/"* "${HOME}/.config/caelestia/"
-success "Restored ~/.config/caelestia/ (shell.json, hypr-vars.lua, monitors/)"
+success "Restored ~/.config/caelestia/ (shell.json, hypr-vars.lua, hypr-user.lua, monitors/)"
 
 # 4. Restore Hyprland Configuration
 info "Restoring Hyprland configuration (~/.config/hypr)..."
@@ -78,7 +78,7 @@ if [ -d "${HOME}/.config/hypr" ] && [ "$(ls -A "${HOME}/.config/hypr" 2>/dev/nul
     warn "Existing Hypr config backed up to ~/.config/hypr.bak.${TIMESTAMP}"
 fi
 cp -rf "${SCRIPT_DIR}/hypr/"* "${HOME}/.config/hypr/"
-success "Restored ~/.config/hypr/ (hyprland.lua, hyprland-gui.lua, scheme/, etc.)"
+success "Restored ~/.config/hypr/ (hyprland.lua, hyprland-gui.lua, rules.lua, scheme/, etc.)"
 
 # 5. Restore Wallpapers Directory
 if [ -d "${SCRIPT_DIR}/wallpapers" ]; then
@@ -122,6 +122,19 @@ if command -v caelestia >/dev/null 2>&1; then
         caelestia shell -k 2>/dev/null || true
         caelestia shell -d 2>/dev/null || true
         success "Caelestia Shell restarted."
+    fi
+fi
+
+# 10. Restore SDDM DedSec Skull Theme
+if [ -d "${SCRIPT_DIR}/sddm" ]; then
+    info "Restoring custom SDDM DedSec Skull theme..."
+    if sudo -n true 2>/dev/null || [ "$EUID" -eq 0 ]; then
+        sudo bash "${SCRIPT_DIR}/sddm/install-theme.sh"
+    elif command -v sudo >/dev/null 2>&1 && [ -t 0 ]; then
+        sudo bash "${SCRIPT_DIR}/sddm/install-theme.sh" || warn "SDDM theme deploy skipped. You can deploy anytime with: sudo ${SCRIPT_DIR}/sddm/install-theme.sh"
+    else
+        warn "SDDM theme package preserved in ${SCRIPT_DIR}/sddm/"
+        warn "To deploy to /usr/share/sddm/themes/, run: sudo ${SCRIPT_DIR}/sddm/install-theme.sh"
     fi
 fi
 

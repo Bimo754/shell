@@ -23,6 +23,21 @@ cd ~/Desktop/Github/shell/backup
 ./restore.sh
 ```
 
+## Updating the Shell
+
+To pull new features and updates from upstream Caelestia Shell, run:
+```sh
+update-shell
+```
+Or:
+```sh
+cd ~/Desktop/Github/shell
+./update.sh
+```
+
+This automatically pulls upstream changes, rebuilds with Ninja, installs to your system, and reloads the shell while preserving all your custom settings and keybinds.
+
+
 ## Shortcuts
 
 ### Applications

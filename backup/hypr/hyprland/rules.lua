@@ -81,6 +81,7 @@ tagged_rule(float_tag, {
     "com.github.GradienceTeam.Gradience", -- GTK themer (deprecated)
     "feh|imv|swappy",                     -- Image viewers
     "org.quickshell",                     -- Quickshell
+    "Windscribe",                         -- Windscribe VPN (autosized float)
 }, "class")
 tagged_rule(float_tag, {
     "File (Operation|Upload)( Progress)?", -- File manager operation progress (upload, move, copy, etc)
@@ -170,6 +171,10 @@ tagged_rule(float_tag, {
     { class = "com-atlauncher-App", title = "ATLauncher Console" },
     { class = "PandoraLauncher",    title = "Minecraft Game Output" },
 })
+
+-- Windscribe VPN (autosized floating window: 350x284 to 350x600)
+tagged_rule(float_tag, { { class = "^[Ww]indscribe$" } })
+
 
 
 -------------------------
