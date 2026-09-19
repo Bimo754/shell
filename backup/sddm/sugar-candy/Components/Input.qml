@@ -92,7 +92,9 @@ Column {
 
                 Rectangle {
                     id: avatarBubble
-                    anchors.fill: parent
+                    width: parent.height * 0.82
+                    height: parent.height * 0.82
+                    anchors.centerIn: parent
                     radius: height / 2
                     color: selectUser.down ? Qt.darker(root.palette.highlight, 1.3) :
                            selectUser.hovered ? Qt.rgba(1, 1, 1, 0.15) :
