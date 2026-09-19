@@ -98,8 +98,8 @@ This automatically pulls upstream changes, rebuilds with Ninja, installs to your
 ### Window Management
 - `SUPER + Q` : Close Active Window
 - `SUPER + V` : Toggle Floating Window
-- `SUPER + F` : Toggle Fullscreen
-- `SUPER + ALT + F` : Toggle Maximized Window
+- `SUPER + F` : Toggle Maximized Window
+- `SUPER + ALT + F` : Toggle Fullscreen
 - `SUPER + P` : Pin Window (Sticky across all workspaces)
 - `SUPER + Left / Right / Up / Down` : Focus window in direction
 - `SUPER + SHIFT + Left / Right / Up / Down` : Move window in direction
@@ -121,9 +121,9 @@ This automatically pulls upstream changes, rebuilds with Ninja, installs to your
 
 ### Workspaces
 - `SUPER + 1..9, 0` : Switch to Workspace 1–10
-- `SUPER + ALT + 1..9, 0` : Move active window to Workspace 1–10
+- `SUPER + SHIFT + 1..9, 0` : Move active window to Workspace 1–10
 - `CTRL + SUPER + 1..9, 0` : Switch workspace group
-- `CTRL + SUPER + ALT + 1..9, 0` : Move window to workspace group
+- `CTRL + SUPER + SHIFT + 1..9, 0` : Move window to workspace group
 - `SUPER + Scroll / PageUp / PageDown` : Previous / Next workspace
 - `SUPER + ALT + Scroll / PageUp / PageDown` : Move window to Prev / Next workspace
 - `SUPER + S` : Toggle Scratchpad Workspace
