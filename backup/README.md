@@ -16,6 +16,7 @@ This folder contains a complete backup of all custom desktop, terminal, shell, w
 | **Hyprland** | `hypr/*` | `~/.config/hypr/` | Full Hyprland setup, `hyprland.lua`, `hyprland-gui.lua`, `scheme/`, `keybinds.lua`, `rules.lua` (with floating app rules) |
 | **Spotify** | `spotify/spotify-flags.conf` | `~/.config/spotify-flags.conf` | Ozone Wayland flags (`UseOzonePlatform`, `wayland`) for crisp, non-pixelated native rendering |
 | **SDDM Login** | `sddm/sugar-candy/`<br>`sddm/install-theme.sh` | `/usr/share/sddm/themes/sugar-candy/`<br>`/etc/sddm.conf.d/theme.conf` | Centered login credentials, pure black background with randomized skull animations (inner 60% focus, 5s interval) |
+| **GRUB Bootloader** | `grub/Matrix/`<br>`grub/install-theme.sh` | `/boot/grub/themes/Matrix/`<br>`/etc/default/grub` | Matrix Morpheus "Red Pill vs Blue Pill" theme (Arch Linux Red vs Windows Blue), 1080p graphics, clean 2-entry toggle |
 | **Timezone** | *(Configured via script)* | `/etc/localtime` | Automatically sets system clock to **Turkiye Time** (`Europe/Istanbul`, UTC+3) |
 
 ---
