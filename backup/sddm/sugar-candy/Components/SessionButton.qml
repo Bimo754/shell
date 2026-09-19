@@ -35,7 +35,7 @@ Item {
     property var selectedSession: selectSession.currentIndex
     property string textConstantSession
     property int loginButtonWidth
-    property Control exposeSession: selectSession
+    property var exposeSession: selectSession
 
     ComboBox {
         id: selectSession
@@ -43,18 +43,8 @@ Item {
         hoverEnabled: true
         anchors.left: parent.left
         Keys.onPressed: {
-            if (event.key == Qt.Key_Up && loginButton.state != "enabled" && !popup.opened)
-                revealSecret.focus = true,
-                revealSecret.state = "focused",
-                currentIndex = currentIndex + 1;
-            if (event.key == Qt.Key_Up && loginButton.state == "enabled" && !popup.opened)
-                loginButton.focus = true,
-                loginButton.state = "focused",
-                currentIndex = currentIndex + 1;
-            if (event.key == Qt.Key_Down && !popup.opened)
-                systemButtons.children[0].focus = true,
-                systemButtons.children[0].state = "focused",
-                currentIndex = currentIndex - 1;
+            if (event.key == Qt.Key_Up && !popup.opened)
+                loginButton.forceActiveFocus();
             if ((event.key == Qt.Key_Left || event.key == Qt.Key_Right) && !popup.opened)
                 popup.open();
         }
