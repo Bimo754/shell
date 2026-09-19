@@ -1,4 +1,40 @@
-# The things I did
+# Arch main setup
+
+## Main apps
+
+```sh
+sudo pacman -S --needed git gcc nano os-prober fastfetch man jq noto-fonts-emoji iptables unzip dnsmasq wget nftables linux-zen linux-zen-headers nvidia-open-dkms nvidia-utils dkms noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu hyprmod gnome-desktop-4
+```
+
+## Grub (zen kernel)
+
+```sh
+# 1. Install necessary boot packages
+sudo pacman -S --needed grub efibootmgr os-prober intel-ucode
+
+# 2. Fix mkinitcpio preset: enable traditional initramfs and disable UKI
+sudo sed -i 's/^#default_image=/default_image=/' /etc/mkinitcpio.d/linux-zen.preset
+sudo sed -i 's/^default_uki=/#default_uki=/' /etc/mkinitcpio.d/linux-zen.preset
+sudo sed -i 's/^#fallback_image=/fallback_image=/' /etc/mkinitcpio.d/linux-zen.preset
+sudo sed -i 's/^fallback_uki=/#fallback_uki=/' /etc/mkinitcpio.d/linux-zen.preset
+
+# 3. Build the missing initramfs-linux.img
+sudo mkinitcpio -p linux-zen
+
+# 4. Remove leftover UKI binary so GRUB stops creating the duplicate entry
+sudo rm -f /boot/EFI/Linux/arch-linux.efi
+
+# 5. Enable os-prober to detect Windows 11
+echo "GRUB_DISABLE_OS_PROBER=false" | sudo tee -a /etc/default/grub
+
+# 6. Make a file executable
+chmod +x /etc/grub.d/10_linux
+
+# 7. Regenerate the GRUB config
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+# Caelestia
 
 ```sh
 caelestia install
@@ -128,3 +164,50 @@ This automatically pulls upstream changes, rebuilds with Ninja, installs to your
 - `CTRL + Backspace` : Delete word backward
 - `CTRL + Delete` : Delete word forward
 - `Tab` : Case-insensitive completion with arrow navigation
+
+
+# User apps
+
+## Yay
+sudo pacman -S --needed base-devel
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd ..
+rm -dfr yay
+
+## Brave
+yay -S brave-browser
+
+## Sublime
+yay -S sublime-text
+
+## Antigravity
+yay -S antigravity
+
+## Spotify
+yay -S spotify
+
+## Timeshift
+yay -S timeshift
+
+## GithubDesktop
+yay -S github-desktop
+
+## Windscribe
+yay -S windscribe-v2-bin
+sudo systemctl enable windscribe-helper.service
+<!-- I don't know how to disable the app from starting, keep the helper enabled tho -->
+
+## Warp
+yay -S cloudflare-warp-bin
+
+## CafeChameleon
+<!-- You must modify the app to install.sh and use xorg-xhost -->
+
+## Docker
+sudo pacman -S docker docker-compose docker-buildx 
+
+## Waydroid
+sudo pacman -S waydroid
+sudo systemctl enable --now waydroid-container
