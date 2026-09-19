@@ -1,5 +1,5 @@
 # ==============================================================================
-# Matrix Morpheus GRUB Theme - Red Pill vs Blue Pill
+# Matrix Morpheus GRUB Theme - Red Pill vs Blue Pill (2560x1600 Native)
 # Repository: https://github.com/Priyank-Adhav/Matrix-Morpheus-GRUB-Theme
 # Featured in: Jacksaur/Gorgeous-GRUB
 # ==============================================================================
@@ -21,9 +21,9 @@ terminal-height: "100%"
     item_color = "#00AA00"
     selected_item_color = "#FFFFFF"
     selected_item_font = "font.pf2"
-    icon_width = 1920
-    icon_height = 1080
-    item_height = 1080
+    icon_width = 2560
+    icon_height = 1600
+    item_height = 1600
     item_width = 100
     item_padding = 0
     item_icon_space = 0
