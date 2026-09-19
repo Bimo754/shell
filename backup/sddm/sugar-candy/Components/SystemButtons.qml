@@ -25,100 +25,68 @@
 import QtQuick 2.11
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.4
+import SddmComponents 2.0 as SDDM
 
 RowLayout {
+    id: systemButtonsRow
+    spacing: 10
 
-    spacing: root.font.pointSize
+    SDDM.TextConstants { id: textConstants }
 
     property var suspend: ["Suspend", config.TranslateSuspend || textConstants.suspend, sddm.canSuspend]
     property var hibernate: ["Hibernate", config.TranslateHibernate || textConstants.hibernate, sddm.canHibernate]
     property var reboot: ["Reboot", config.TranslateReboot || textConstants.reboot, sddm.canReboot]
     property var shutdown: ["Shutdown", config.TranslateShutdown || textConstants.shutdown, sddm.canPowerOff]
 
-    property Control exposedSession
+    property var firstButton: repeater.count > 0 ? repeater.itemAt(0) : null
 
     Repeater {
-
-        id: systemButtons
+        id: repeater
         model: [suspend, hibernate, reboot, shutdown]
 
         RoundButton {
-            text: modelData[1]
-            font.pointSize: root.font.pointSize * 0.8
-            Layout.alignment: Qt.AlignHCenter
-            icon.source: modelData ? Qt.resolvedUrl("../Assets/" + modelData[0] + ".svgz") : ""
-            icon.height: 2 * Math.round((root.font.pointSize * 3) / 2)
-            icon.width: 2 * Math.round((root.font.pointSize * 3) / 2)
-            display: AbstractButton.TextUnderIcon
-            visible: config.ForceHideSystemButtons != "true" && modelData[2]
+            id: sysBtn
+            implicitWidth: 36
+            implicitHeight: 36
+            display: AbstractButton.IconOnly
+            visible: config.ForceHideSystemButtons != "true" && (modelData[2] || (Qt.application.arguments && Qt.application.arguments.indexOf("--test-mode") !== -1))
             hoverEnabled: true
-            palette.buttonText: root.palette.text
+
+            icon.source: modelData ? Qt.resolvedUrl("../Assets/" + modelData[0] + ".svgz") : ""
+            icon.height: 18
+            icon.width: 18
+            icon.color: hovered || activeFocus ? root.palette.highlight : root.palette.text
+
+            ToolTip.visible: hovered
+            ToolTip.delay: 300
+            ToolTip.text: modelData[1]
+
             background: Rectangle {
-                height: 2
-                color: "transparent"
-                width: parent.width
-                border.width: parent.activeFocus ? 1 : 0
-                border.color: "transparent"
-                anchors.top: parent.bottom
+                radius: width / 2
+                color: sysBtn.down ? Qt.rgba(1, 1, 1, 0.25) : sysBtn.hovered ? Qt.rgba(1, 1, 1, 0.15) : Qt.rgba(0.08, 0.08, 0.12, 0.7)
+                border.color: sysBtn.activeFocus || sysBtn.hovered ? root.palette.highlight : Qt.rgba(1, 1, 1, 0.15)
+                border.width: sysBtn.activeFocus ? 2 : 1
+
+                Behavior on border.color {
+                    ColorAnimation { duration: 150 }
+                }
+                Behavior on color {
+                    ColorAnimation { duration: 150 }
+                }
             }
+
             Keys.onReturnPressed: clicked()
+            Keys.onEnterPressed: clicked()
             onClicked: {
-                parent.forceActiveFocus()
-                index == 0 ? sddm.suspend() : index == 1 ? sddm.hibernate() : index == 2 ? sddm.reboot() : sddm.powerOff()
+                forceActiveFocus()
+                if (index === 0) sddm.suspend()
+                else if (index === 1) sddm.hibernate()
+                else if (index === 2) sddm.reboot()
+                else sddm.powerOff()
             }
-            KeyNavigation.up: exposedSession
-            KeyNavigation.left: parent.children[index-1]
 
-            states: [
-                State {
-                    name: "pressed"
-                    when: parent.children[index].down
-                    PropertyChanges {
-                        target: parent.children[index]
-                        palette.buttonText: Qt.darker(root.palette.highlight, 1.1)
-                    }
-                    PropertyChanges {
-                        target: parent.children[index].background
-                        border.color: Qt.darker(root.palette.highlight, 1.1)
-                    }
-                },
-                State {
-                    name: "hovered"
-                    when: parent.children[index].hovered
-                    PropertyChanges {
-                        target: parent.children[index]
-                        palette.buttonText: Qt.lighter(root.palette.highlight, 1.1)
-                    }
-                    PropertyChanges {
-                        target: parent.children[index].background
-                        border.color: Qt.lighter(root.palette.highlight, 1.1)
-                    }
-                },
-                State {
-                    name: "focused"
-                    when: parent.children[index].activeFocus
-                    PropertyChanges {
-                        target: parent.children[index]
-                        palette.buttonText: root.palette.highlight
-                    }
-                    PropertyChanges {
-                        target: parent.children[index].background
-                        border.color: root.palette.highlight
-                    }
-                }
-            ]
-
-            transitions: [
-                Transition {
-                    PropertyAnimation {
-                        properties: "palette.buttonText, border.color"
-                        duration: 150
-                    }
-                }
-            ]
-
+            KeyNavigation.left: index > 0 ? repeater.itemAt(index - 1) : null
+            KeyNavigation.right: index < repeater.count - 1 ? repeater.itemAt(index + 1) : null
         }
-
     }
-
 }

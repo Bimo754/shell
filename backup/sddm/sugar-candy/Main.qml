@@ -110,6 +110,15 @@ Pane {
             z: 1
         }
 
+        SystemButtons {
+            id: systemButtons
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.margins: 28
+            visible: config.ForceHideSystemButtons != "true"
+            z: 2
+        }
+
         Button {
             id: vkb
             onClicked: virtualKeyboard.switchState()
@@ -143,8 +152,11 @@ Pane {
                     name: "visible"
                     PropertyChanges {
                         target: form
-                        systemButtonVisibility: false
                         clockVisibility: false
+                    }
+                    PropertyChanges {
+                        target: systemButtons
+                        visible: false
                     }
                     PropertyChanges {
                         target: virtualKeyboard

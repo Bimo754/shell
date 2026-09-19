@@ -31,17 +31,10 @@ Column {
     width: parent.width / 2
 
     Label {
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pointSize: config.HeaderText !=="" ? root.font.pointSize * 3 : 0
-        color: root.palette.text
-        renderType: Text.QtRendering
-        text: config.HeaderText
-    }
-
-    Label {
         id: timeLabel
         anchors.horizontalCenter: parent.horizontalCenter
-        font.pointSize: root.font.pointSize * 3
+        font.pointSize: root.font.pointSize * 3.5
+        font.weight: Font.DemiBold
         color: root.palette.text
         renderType: Text.QtRendering
         function updateTime() {
@@ -49,28 +42,12 @@ Column {
         }
     }
 
-    Label {
-        id: dateLabel
-        anchors.horizontalCenter: parent.horizontalCenter
-        color: root.palette.text
-        renderType: Text.QtRendering
-        function updateTime() {
-            text = new Date().toLocaleDateString(Qt.locale(config.Locale), config.DateFormat == "short" ? Locale.ShortFormat : config.DateFormat !== "" ? config.DateFormat : Locale.LongFormat)
-        }
-    }
-
     Timer {
         interval: 1000
         repeat: true
         running: true
-        onTriggered: {
-            dateLabel.updateTime()
-            timeLabel.updateTime()
-        }
+        onTriggered: timeLabel.updateTime()
     }
 
-    Component.onCompleted: {
-        dateLabel.updateTime()
-        timeLabel.updateTime()
-    }
+    Component.onCompleted: timeLabel.updateTime()
 }
