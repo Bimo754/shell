@@ -97,8 +97,7 @@ Column {
                     color: selectUser.down ? Qt.darker(root.palette.highlight, 1.3) :
                            selectUser.hovered ? Qt.rgba(1, 1, 1, 0.15) :
                            Qt.rgba(0.08, 0.08, 0.12, 0.85)
-                    border.color: selectUser.activeFocus ? root.palette.highlight : root.palette.text
-                    border.width: selectUser.activeFocus ? 2 : 1
+                    border.width: 0
 
                     Image {
                         id: userSvg
