@@ -57,11 +57,14 @@ else
     echo "GRUB_THEME=\"${THEME_DEST}/theme.txt\"" >> "${GRUB_DEFAULT}"
 fi
 
-# 4. Set resolution to 1920x1080,auto
+# 4. Set resolution to 2560x1600 native resolution with auto fallback
+DETECTED_RES=$(cat /sys/class/drm/card*-eDP-*/modes 2>/dev/null | head -n 1 || echo "2560x1600")
+[ -z "$DETECTED_RES" ] && DETECTED_RES="2560x1600"
+info "Setting GRUB_GFXMODE to ${DETECTED_RES},auto..."
 if grep -q "^GRUB_GFXMODE=" "${GRUB_DEFAULT}"; then
-    sed -i 's|^GRUB_GFXMODE=.*|GRUB_GFXMODE=1920x1080,auto|' "${GRUB_DEFAULT}"
+    sed -i "s|^GRUB_GFXMODE=.*|GRUB_GFXMODE=${DETECTED_RES},auto|" "${GRUB_DEFAULT}"
 else
-    echo "GRUB_GFXMODE=1920x1080,auto" >> "${GRUB_DEFAULT}"
+    echo "GRUB_GFXMODE=${DETECTED_RES},auto" >> "${GRUB_DEFAULT}"
 fi
 
 # 5. Keep graphics payload for smooth transition
