@@ -74,13 +74,9 @@ elif ! grep -q "^GRUB_GFXPAYLOAD_LINUX=" "${GRUB_DEFAULT}"; then
     echo "GRUB_GFXPAYLOAD_LINUX=keep" >> "${GRUB_DEFAULT}"
 fi
 
-# 6. Disable submenus for clean 2-entry Red Pill vs Blue Pill toggle
-if grep -q "^#GRUB_DISABLE_SUBMENU=" "${GRUB_DEFAULT}"; then
-    sed -i 's|^#GRUB_DISABLE_SUBMENU=.*|GRUB_DISABLE_SUBMENU=y|' "${GRUB_DEFAULT}"
-elif grep -q "^GRUB_DISABLE_SUBMENU=" "${GRUB_DEFAULT}"; then
-    sed -i 's|^GRUB_DISABLE_SUBMENU=.*|GRUB_DISABLE_SUBMENU=y|' "${GRUB_DEFAULT}"
-else
-    echo "GRUB_DISABLE_SUBMENU=y" >> "${GRUB_DEFAULT}"
+# 6. Keep submenus enabled so Advanced options for Arch Linux is available
+if grep -q "^GRUB_DISABLE_SUBMENU=" "${GRUB_DEFAULT}"; then
+    sed -i 's|^GRUB_DISABLE_SUBMENU=.*|#GRUB_DISABLE_SUBMENU=y|' "${GRUB_DEFAULT}"
 fi
 
 # 7. Ensure OS-Prober is enabled for Windows detection
@@ -90,13 +86,6 @@ elif grep -q "^GRUB_DISABLE_OS_PROBER=" "${GRUB_DEFAULT}"; then
     sed -i 's|^GRUB_DISABLE_OS_PROBER=.*|GRUB_DISABLE_OS_PROBER=false|' "${GRUB_DEFAULT}"
 else
     echo "GRUB_DISABLE_OS_PROBER=false" >> "${GRUB_DEFAULT}"
-fi
-
-# 8. Clean up extra menu entries (disable UEFI firmware script for pure 2-choice menu)
-if [ -f /etc/grub.d/30_uefi-firmware ] && [ -x /etc/grub.d/30_uefi-firmware ]; then
-    chmod -x /etc/grub.d/30_uefi-firmware
-    info "Disabled UEFI Firmware Settings menu entry for clean 2-entry layout."
-    info "(You can always access BIOS via 'systemctl reboot --firmware-setup' or pressing 'c' then 'fwsetup' in GRUB)."
 fi
 
 # 9. Regenerate GRUB config
