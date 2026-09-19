@@ -61,8 +61,8 @@ return {
     -- Modifier only, the actual binds will be mod + 0-9. These should be strings and not arrays.
     kbGoToWs                   = "SUPER",
     kbGoToWsGroup              = "CTRL + SUPER",
-    kbMoveWinToWs              = "SUPER + ALT",
-    kbMoveWinToWsGroup         = "CTRL + SUPER + ALT",
+    kbMoveWinToWs              = "SUPER + SHIFT",
+    kbMoveWinToWsGroup         = "CTRL + SUPER + SHIFT",
 
     -- All the following binds can be either an array of binds to bind multiple keys, or a single string.
 
@@ -97,8 +97,8 @@ return {
     kbNormalizeWindow          = "CTRL + SUPER + ALT + Backslash",
     kbWindowPip                = "SUPER + ALT + Backslash",
     kbPinWindow                = "SUPER + P",
-    kbWindowFullscreen         = "SUPER + F",
-    kbWindowBorderedFullscreen = "SUPER + ALT + F",
+    kbWindowFullscreen         = "SUPER + ALT + F",
+    kbWindowBorderedFullscreen = "SUPER + F",
     kbToggleWindowFloating     = "SUPER + ALT + Space",
     kbCloseWindow              = "SUPER + Q",
 
