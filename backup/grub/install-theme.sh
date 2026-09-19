@@ -57,14 +57,23 @@ else
     echo "GRUB_THEME=\"${THEME_DEST}/theme.txt\"" >> "${GRUB_DEFAULT}"
 fi
 
-# 4. Set resolution to 2560x1600 native resolution with auto fallback
+# 4. Preload png module in GRUB core
+if grep -q "^GRUB_PRELOAD_MODULES=" "${GRUB_DEFAULT}"; then
+    if ! grep "^GRUB_PRELOAD_MODULES=" "${GRUB_DEFAULT}" | grep -q "png"; then
+        sed -i 's|^GRUB_PRELOAD_MODULES="\(.*\)"|GRUB_PRELOAD_MODULES="\1 png"|' "${GRUB_DEFAULT}"
+    fi
+else
+    echo 'GRUB_PRELOAD_MODULES="part_gpt part_msdos fat ext2 png"' >> "${GRUB_DEFAULT}"
+fi
+
+# 5. Set resolution to 2560x1600 native resolution with 1080p and auto fallback
 DETECTED_RES=$(cat /sys/class/drm/card*-eDP-*/modes 2>/dev/null | head -n 1 || echo "2560x1600")
 [ -z "$DETECTED_RES" ] && DETECTED_RES="2560x1600"
-info "Setting GRUB_GFXMODE to ${DETECTED_RES},auto..."
+info "Setting GRUB_GFXMODE to ${DETECTED_RES},1920x1080,auto..."
 if grep -q "^GRUB_GFXMODE=" "${GRUB_DEFAULT}"; then
-    sed -i "s|^GRUB_GFXMODE=.*|GRUB_GFXMODE=${DETECTED_RES},auto|" "${GRUB_DEFAULT}"
+    sed -i "s|^GRUB_GFXMODE=.*|GRUB_GFXMODE=${DETECTED_RES},1920x1080,auto|" "${GRUB_DEFAULT}"
 else
-    echo "GRUB_GFXMODE=${DETECTED_RES},auto" >> "${GRUB_DEFAULT}"
+    echo "GRUB_GFXMODE=${DETECTED_RES},1920x1080,auto" >> "${GRUB_DEFAULT}"
 fi
 
 # 5. Keep graphics payload for smooth transition
