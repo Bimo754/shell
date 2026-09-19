@@ -4,6 +4,7 @@
 # Featured in: Jacksaur/Gorgeous-GRUB
 # ==============================================================================
 
+desktop-image: "background.png"
 desktop-color: "#000000"
 title-text: ""
 terminal-font: "font.pf2"
