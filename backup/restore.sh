@@ -138,6 +138,19 @@ if [ -d "${SCRIPT_DIR}/sddm" ]; then
     fi
 fi
 
+# 11. Restore Matrix Morpheus GRUB Theme
+if [ -d "${SCRIPT_DIR}/grub" ]; then
+    info "Restoring Matrix Morpheus GRUB theme (Red Pill vs Blue Pill)..."
+    if sudo -n true 2>/dev/null || [ "$EUID" -eq 0 ]; then
+        sudo bash "${SCRIPT_DIR}/grub/install-theme.sh"
+    elif command -v sudo >/dev/null 2>&1 && [ -t 0 ]; then
+        sudo bash "${SCRIPT_DIR}/grub/install-theme.sh" || warn "GRUB theme deploy skipped. You can deploy anytime with: sudo ${SCRIPT_DIR}/grub/install-theme.sh"
+    else
+        warn "GRUB theme package preserved in ${SCRIPT_DIR}/grub/"
+        warn "To deploy to /boot/grub/themes/, run: sudo ${SCRIPT_DIR}/grub/install-theme.sh"
+    fi
+fi
+
 echo -e "${GREEN}======================================================${RESET}"
 echo -e "${GREEN}   All configurations restored successfully!   ${RESET}"
 echo -e "${GREEN}======================================================${RESET}"
