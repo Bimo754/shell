@@ -45,9 +45,10 @@ Column {
 
             id: selectUser
 
-            width: parent.height
-            height: parent.height
-            anchors.left: parent.left
+            width: username.height
+            height: username.height
+            anchors.left: username.left
+            anchors.verticalCenter: username.verticalCenter
 
             property var popkey: config.ForceRightToLeft == "true" ? Qt.Key_Right : Qt.Key_Left
             Keys.onPressed: {
@@ -85,18 +86,40 @@ Column {
                 }
             }
 
-            indicator: Button {
-                    id: usernameIcon
-                    width: selectUser.height * 0.8
-                    height: parent.height
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.leftMargin: selectUser.height * 0.125
-                    icon.height: parent.height * 0.25
-                    icon.width: parent.height * 0.25
-                    enabled: false
-                    icon.color: root.palette.text
-                    icon.source: Qt.resolvedUrl("../Assets/User.svgz")
+            indicator: Item {
+                id: usernameIcon
+                anchors.fill: parent
+
+                Rectangle {
+                    id: avatarBubble
+                    anchors.fill: parent
+                    radius: height / 2
+                    color: selectUser.down ? Qt.darker(root.palette.highlight, 1.3) :
+                           selectUser.hovered ? Qt.rgba(1, 1, 1, 0.15) :
+                           Qt.rgba(0.08, 0.08, 0.12, 0.85)
+                    border.color: selectUser.activeFocus ? root.palette.highlight : root.palette.text
+                    border.width: selectUser.activeFocus ? 2 : 1
+
+                    Image {
+                        id: userSvg
+                        anchors.centerIn: parent
+                        width: parent.height * 0.45
+                        height: parent.height * 0.45
+                        source: Qt.resolvedUrl("../Assets/User.svgz")
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    ColorOverlay {
+                        anchors.fill: userSvg
+                        source: userSvg
+                        color: selectUser.down ? Qt.lighter(root.palette.highlight, 1.1) :
+                               selectUser.hovered ? Qt.lighter(root.palette.highlight, 1.2) :
+                               selectUser.activeFocus ? root.palette.highlight :
+                               root.palette.text
+                    }
+                }
             }
 
             background: Rectangle {
@@ -140,42 +163,6 @@ Column {
                 }
             }
 
-            states: [
-                State {
-                    name: "pressed"
-                    when: selectUser.down
-                    PropertyChanges {
-                        target: usernameIcon
-                        icon.color: Qt.lighter(root.palette.highlight, 1.1)
-                    }
-                },
-                State {
-                    name: "hovered"
-                    when: selectUser.hovered
-                    PropertyChanges {
-                        target: usernameIcon
-                        icon.color: Qt.lighter(root.palette.highlight, 1.2)
-                    }
-                },
-                State {
-                    name: "focused"
-                    when: selectUser.activeFocus
-                    PropertyChanges {
-                        target: usernameIcon
-                        icon.color: root.palette.highlight
-                    }
-                }
-            ]
-
-            transitions: [
-                Transition {
-                    PropertyAnimation {
-                        properties: "color, border.color, icon.color"
-                        duration: 150
-                    }
-                }
-            ]
-
         }
 
         TextField {
@@ -187,6 +174,8 @@ Column {
             width: parent.width
             placeholderText: config.TranslatePlaceholderUsername || textConstants.userName
             selectByMouse: true
+            leftPadding: selectUser.width + 6
+            rightPadding: selectUser.width + 6
             horizontalAlignment: TextInput.AlignHCenter
             renderType: Text.QtRendering
             onFocusChanged:{
