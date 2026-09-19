@@ -39,7 +39,7 @@
                 "id": "microphone"
             },
             {
-                "enabled": false,
+                "enabled": true,
                 "id": "kbLayout"
             },
             {
@@ -128,7 +128,7 @@
                 "id": "dnd"
             },
             {
-                "enabled": false,
+                "enabled": true,
                 "id": "vpn"
             }
         ]
