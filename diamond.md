@@ -6,33 +6,217 @@
 sudo pacman -S --needed git gcc nano os-prober fastfetch man jq noto-fonts-emoji iptables unzip dnsmasq wget nftables linux-zen linux-zen-headers nvidia-open-dkms nvidia-utils dkms noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu hyprmod gnome-desktop-4
 ```
 
-## Grub (zen kernel)
+## Bootloader: UKI (Unified Kernel Image - Zen kernel)
+
+> Direct UEFI boot with Secure Boot & TPM 2.0 support (No GRUB needed!)
+> Bundles Kernel + Microcode + Initramfs + Cmdline into a single signed EFI executable.
 
 ```sh
 # 1. Install necessary boot packages
-sudo pacman -S --needed grub efibootmgr os-prober intel-ucode
+sudo pacman -S --needed efibootmgr intel-ucode sbctl
 
-# 2. Fix mkinitcpio preset: enable traditional initramfs and disable UKI
-sudo sed -i 's/^#default_image=/default_image=/' /etc/mkinitcpio.d/linux-zen.preset
-sudo sed -i 's/^default_uki=/#default_uki=/' /etc/mkinitcpio.d/linux-zen.preset
-sudo sed -i 's/^#fallback_image=/fallback_image=/' /etc/mkinitcpio.d/linux-zen.preset
-sudo sed -i 's/^fallback_uki=/#fallback_uki=/' /etc/mkinitcpio.d/linux-zen.preset
+# 2. Configure kernel command line for UKI
+sudo mkdir -p /etc/cmdline.d
+echo "loglevel=3 quiet rd.luks.name=$(sudo cryptsetup luksUUID /dev/nvme0n1p6)=cryptroot root=/dev/mapper/cryptroot rw" | sudo tee /etc/cmdline.d/root.conf
 
-# 3. Build the missing initramfs-linux.img
-sudo mkinitcpio -p linux-zen
+# 3. Enable UKI generation in mkinitcpio preset
+sudo sed -i 's/^default_image=/#default_image=/' /etc/mkinitcpio.d/linux-zen.preset
+sudo sed -i 's/^#default_uki=/default_uki=/' /etc/mkinitcpio.d/linux-zen.preset
+sudo mkdir -p /boot/EFI/Linux
 
-# 4. Remove leftover UKI binary so GRUB stops creating the duplicate entry
-sudo rm -f /boot/EFI/Linux/arch-linux.efi
+# 4. Generate UKI
+sudo mkinitcpio -P
 
-# 5. Enable os-prober to detect Windows 11
-echo "GRUB_DISABLE_OS_PROBER=false" | sudo tee -a /etc/default/grub
-
-# 6. Make a file executable
-chmod +x /etc/grub.d/10_linux
-
-# 7. Regenerate the GRUB config
-sudo grub-mkconfig -o /boot/grub/grub.cfg
+# 5. Add direct UKI entry to motherboard UEFI boot manager
+sudo efibootmgr --create --disk /dev/nvme0n1 --part 5 --label "Arch Linux" --loader '\EFI\Linux\arch-linux-zen.efi'
 ```
+
+## Secure Boot & BitLocker
+
+### Arch
+
+```sh
+sudo pacman -S sbctl
+```
+
+### UEFI
+
+Enable "Setup Mode" (Clear/Delete Factory Keys in BIOS)
+
+### Arch
+
+```sh
+# Verify you are in Setup Mode (should show: Setup Mode: Enabled)
+sbctl status
+
+# Create your private cryptographic keys:
+sudo sbctl create-keys
+
+# Enroll your keys AND Microsoft's OEM keys (essential for Windows 11 & BitLocker):
+sudo sbctl enroll-keys -m
+
+# ---
+
+# Sign the Unified Kernel Image (automatically re-signed on every kernel update via pacman hook)
+sudo sbctl sign -s /boot/EFI/Linux/arch-linux-zen.efi
+
+# Verify signature
+sudo sbctl verify
+```
+
+### UEFI
+
+Turn secure boot ON
+
+### Arch
+
+```sh
+# Verify secure boot is enabled and Microsoft is enrolled
+sbctl status
+```
+
+### UEFI
+
+Turn secure boot OFF (temp)
+
+### USB Arch
+
+```sh
+
+## Phase 1: Encrypt the partition
+
+# 1. Check filesystem integrity before touching it
+e2fsck -f /dev/nvme0n1p6
+
+# 2. Shrink the ext4 filesystem to 245G to safely leave room for the 32MB LUKS2 header
+resize2fs /dev/nvme0n1p6 245G
+
+# 3. Encrypt the existing ext4 partition in-place with LUKS2
+cryptsetup reencrypt --encrypt --type luks2 --reduce-device-size 32M /dev/nvme0n1p6
+
+# 4. Open the newly created encrypted container as "cryptroot"
+cryptsetup open /dev/nvme0n1p6 cryptroot
+
+# 5. Expand the ext4 filesystem back to fill the full container capacity
+resize2fs /dev/mapper/cryptroot
+
+## Phase 2: Mount the system and chroot
+
+# 6. Mount the decrypted root to /mnt
+mount /dev/mapper/cryptroot /mnt
+
+# 7. Mount the EFI/boot partition
+mount /dev/nvme0n1p5 /mnt/boot
+
+# 8. Enter the installed Arch environment
+arch-chroot /mnt
+
+## Phase 3: Configure cryptroot and UKI
+
+# 9. Get the UUID of the decrypted filesystem
+lsblk -f /dev/mapper/cryptroot
+nano /etc/fstab
+#    UUID=<DECRYPTED_CRYPTROOT_UUID>    /    ext4    rw,relatime    0 1
+# Mine came already configured
+
+# 10. Update /etc/mkinitcpio.conf with systemd & sd-encrypt hooks:
+nano /etc/mkinitcpio.conf
+#     HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
+
+# 11. Configure kernel command line for UKI
+mkdir -p /etc/cmdline.d
+echo "loglevel=3 quiet rd.luks.name=$(cryptsetup luksUUID /dev/nvme0n1p6)=cryptroot root=/dev/mapper/cryptroot rw" > /etc/cmdline.d/root.conf
+
+# 12. Configure mkinitcpio preset to generate UKI
+sed -i 's/^default_image=/#default_image=/' /etc/mkinitcpio.d/linux-zen.preset
+sed -i 's/^#default_uki=/default_uki=/' /etc/mkinitcpio.d/linux-zen.preset
+mkdir -p /boot/EFI/Linux
+
+# 13. Generate UKI
+mkinitcpio -P
+
+# 14. Sign UKI with sbctl
+sbctl sign -s /boot/EFI/Linux/arch-linux-zen.efi
+
+# 15. Create direct UEFI boot entry for UKI (no GRUB needed!)
+efibootmgr --create --disk /dev/nvme0n1 --part 5 --label "Arch Linux" --loader '\EFI\Linux\arch-linux-zen.efi'
+
+## Phase 4: Clean exit and reboot
+
+# 16. Exit chroot
+exit
+
+# 17. Unmount all partitions cleanly
+umount -R /mnt
+
+# 18. Close the encrypted mapper
+cryptsetup close cryptroot
+
+# 19. Shutdown and reboot to UEFI to enable Secure boot
+shutdown now
+```
+
+### UEFI
+
+Turn secure boot ON
+
+### Arch
+
+Enter passphrase on first boot and enroll TPM 2.0 to auto-unlock on all future boots:
+
+```sh
+# Bind LUKS key to TPM 2.0 sealed against firmware (PCR 0) and Secure Boot (PCR 7)
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7 /dev/nvme0n1p6
+```
+
+## Fallback Bootloader & Disaster Prevention
+
+Ensure your Arch UKI is copied to the universal UEFI fallback path (`BOOTX64.EFI`) so your system remains bootable even if motherboard NVRAM boot entries are wiped:
+
+```sh
+# Copy UKI to universal fallback
+sudo cp /boot/EFI/Linux/arch-linux-zen.efi /boot/EFI/BOOT/BOOTX64.EFI
+
+# Sign fallback with sbctl
+sudo sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
+```
+
+## BIOS / UEFI Update Recovery Playbook
+
+Updating motherboard BIOS resets NVRAM boot entries, replaces custom Secure Boot keys with factory keys, and changes PCR 0. Follow this procedure after any firmware update:
+
+### 1. Before BIOS Update
+- Save your **48-digit Windows BitLocker Recovery Key** on another device ([account.microsoft.com/devices/recoverykey](https://account.microsoft.com/devices/recoverykey)).
+- Ensure you remember your **Arch LUKS passphrase**.
+
+### 2. First Boot: Windows 11
+- Windows will boot automatically and prompt for your **48-digit BitLocker Recovery Key** (due to PCR 0 firmware change).
+- Enter the key. Windows will auto-reseal BitLocker to the new firmware.
+
+### 3. Second Boot: Restore Arch Linux
+1. Reboot into BIOS settings (`Del` / `F2`) -> go to **Secure Boot** -> set to **Setup Mode** (Clear Secure Boot keys).
+2. Boot into Arch using your motherboard boot menu (`F11` / `F12` -> pick drive or "UEFI OS").
+3. Type your **LUKS passphrase** to decrypt root (since PCR 0 changed).
+4. In terminal, run:
+
+```sh
+# 1. Re-enroll custom keys + Microsoft OEM keys:
+sudo sbctl enroll-keys -m
+
+# 2. Re-create direct UEFI boot entry if wiped:
+sudo efibootmgr --create --disk /dev/nvme0n1 --part 5 --label "Arch Linux" --loader '\EFI\Linux\arch-linux-zen.efi'
+
+# 3. Re-seal TPM 2.0 to new BIOS firmware:
+sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/nvme0n1p6
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7 /dev/nvme0n1p6
+
+# 4. Set boot order (Windows -> Arch):
+sudo efibootmgr -o 0004,0005,0003,0001,2001,2002,2003
+```
+
+5. Reboot into BIOS -> turn **Secure Boot: Enabled**. Everything is back to auto-unlocking.
+
+
 
 # Caelestia
 
