@@ -3,7 +3,7 @@
 ## Main apps
 
 ```sh
-sudo pacman -S --needed git gcc nano os-prober fastfetch man jq noto-fonts-emoji iptables unzip dnsmasq wget nftables linux-zen linux-zen-headers nvidia-open-dkms nvidia-utils dkms noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu hyprmod gnome-desktop-4
+sudo pacman -S --needed git gcc nano os-prober fastfetch man jq noto-fonts-emoji iptables unzip dnsmasq wget nftables linux-zen linux-zen-headers nvidia-open-dkms nvidia-utils dkms noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu hyprmod gnome-desktop-4 locate
 ```
 
 ## Bootloader: UKI (Unified Kernel Image - Zen kernel)
@@ -395,3 +395,27 @@ sudo pacman -S docker docker-compose docker-buildx
 ## Waydroid
 sudo pacman -S waydroid
 sudo systemctl enable --now waydroid-container
+
+## Obsidian
+yay -S obsidian
+
+## BlackArch repo
+curl -O https://blackarch.org/strap.sh
+echo 00688950aaf5e5804d2abebb8d3d3ea1d28525ed strap.sh | sha1sum -c
+chmod +x strap.sh
+sudo ./strap.sh
+sudo pacman -Syu
+rm -f strap.sh
+<!-- Install tools individually: sudo pacman -S <tool-name> -->
+
+## Caido
+sudo pacman -S fuse2
+yay -S caido
+
+# Hacking tools
+
+yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad
+
+<!-- tar -xvf /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz -->
+
+certipy

@@ -6,7 +6,7 @@ hl.config({
         kb_layout = "us,tr,ara",
         numlock_by_default = true,
         touchpad = {
-            drag_lock = 1,
+            drag_lock = 0,
         },
     },
 })
