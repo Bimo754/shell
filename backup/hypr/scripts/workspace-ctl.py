@@ -20,41 +20,50 @@ def get_active_workspace():
 def run_batch(commands):
     if not commands:
         return
-    batch_cmd = "; ".join(commands)
-    subprocess.run(["hyprctl", "--batch", batch_cmd], check=True)
+    batch_cmd = " ; ".join(commands)
+    res = subprocess.run(["hyprctl", "--batch", batch_cmd], capture_output=True, text=True)
+    if "error:" in res.stdout or "error:" in res.stderr:
+        print(f"Hyprland dispatch error: {res.stdout} {res.stderr}", file=sys.stderr)
 
-def swap_workspaces(ws1, ws2):
+def swap_workspaces(ws1, ws2, follow=True):
     clients = get_clients()
     wins1 = [w["address"] for w in clients if w["workspace"]["id"] == ws1]
     wins2 = [w["address"] for w in clients if w["workspace"]["id"] == ws2]
 
     if not wins1 and not wins2:
-        print(f"Neither workspace {ws1} nor {ws2} has windows.")
+        # If neither has windows, just focus target workspace
+        if follow:
+            run_batch([f'dispatch hl.dsp.focus({{ workspace = "{ws2}" }})'])
         return
 
-    temp_ws = 99999
+    temp_ws = "99999"
     batch = []
 
     # 1. Move ws1 -> temp
     for a in wins1:
-        batch.append(f"dispatch movetoworkspacesilent {temp_ws},address:{a}")
+        batch.append(f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{temp_ws}", silent = true }})')
     # 2. Move ws2 -> ws1
     for a in wins2:
-        batch.append(f"dispatch movetoworkspacesilent {ws1},address:{a}")
+        batch.append(f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{ws1}", silent = true }})')
     # 3. Move temp -> ws2
     for a in wins1:
-        batch.append(f"dispatch movetoworkspacesilent {ws2},address:{a}")
+        batch.append(f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{ws2}", silent = true }})')
+
+    # 4. Follow to target workspace
+    if follow:
+        batch.append(f'dispatch hl.dsp.focus({{ workspace = "{ws2}" }})')
 
     run_batch(batch)
     print(f"Swapped workspace {ws1} and workspace {ws2}.")
 
-def shift_workspace(src_ws, dest_ws):
+def shift_workspace(src_ws, dest_ws, follow=True):
     clients = get_clients()
     occupied = sorted(set(w["workspace"]["id"] for w in clients if w["workspace"]["id"] > 0))
 
     src_wins = [w["address"] for w in clients if w["workspace"]["id"] == src_ws]
     if not src_wins:
-        print(f"Workspace {src_ws} has no windows to move.")
+        if follow:
+            run_batch([f'dispatch hl.dsp.focus({{ workspace = "{dest_ws}" }})'])
         return
 
     batch = []
@@ -63,31 +72,34 @@ def shift_workspace(src_ws, dest_ws):
         for ws in sorted([w for w in occupied if w >= dest_ws], reverse=True):
             wins = [w["address"] for w in clients if w["workspace"]["id"] == ws]
             for a in wins:
-                batch.append(f"dispatch movetoworkspacesilent {ws + 1},address:{a}")
+                batch.append(f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{ws + 1}", silent = true }})')
         for a in src_wins:
-            batch.append(f"dispatch movetoworkspacesilent {dest_ws},address:{a}")
+            batch.append(f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{dest_ws}", silent = true }})')
     elif dest_ws < src_ws:
         # Pushing left: shift workspaces from lowest up to dest_ws
         for ws in sorted([w for w in occupied if w <= dest_ws]):
             wins = [w["address"] for w in clients if w["workspace"]["id"] == ws]
             for a in wins:
-                batch.append(f"dispatch movetoworkspacesilent {ws - 1},address:{a}")
+                batch.append(f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{ws - 1}", silent = true }})')
         for a in src_wins:
-            batch.append(f"dispatch movetoworkspacesilent {dest_ws},address:{a}")
+            batch.append(f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{dest_ws}", silent = true }})')
     else:
-        print("Source and destination workspaces are identical.")
         return
+
+    if follow:
+        batch.append(f'dispatch hl.dsp.focus({{ workspace = "{dest_ws}" }})')
 
     run_batch(batch)
     print(f"Moved workspace {src_ws} to {dest_ws} (pushing existing workspaces).")
 
-def move_workspace_all(src_ws, dest_ws):
+def move_workspace_all(src_ws, dest_ws, follow=True):
     clients = get_clients()
     src_wins = [w["address"] for w in clients if w["workspace"]["id"] == src_ws]
     if not src_wins:
-        print(f"Workspace {src_ws} has no windows.")
         return
-    batch = [f"dispatch movetoworkspacesilent {dest_ws},address:{a}" for a in src_wins]
+    batch = [f'dispatch hl.dsp.window.move({{ window = "address:{a}", workspace = "{dest_ws}", silent = true }})' for a in src_wins]
+    if follow:
+        batch.append(f'dispatch hl.dsp.focus({{ workspace = "{dest_ws}" }})')
     run_batch(batch)
     print(f"Moved all {len(src_wins)} windows from workspace {src_ws} to {dest_ws}.")
 
@@ -109,11 +121,11 @@ def main():
         swap_workspaces(int(sys.argv[2]), int(sys.argv[3]))
     elif cmd in ("swap-next", "next"):
         curr = get_active_workspace()
-        swap_workspaces(curr, curr + 1)
+        swap_workspaces(curr, curr + 1, follow=True)
     elif cmd in ("swap-prev", "prev"):
         curr = get_active_workspace()
         if curr > 1:
-            swap_workspaces(curr, curr - 1)
+            swap_workspaces(curr, curr - 1, follow=True)
     elif cmd in ("shift", "push"):
         if len(sys.argv) < 4:
             print("Usage: workspace-ctl shift <src> <dest>")
