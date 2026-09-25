@@ -414,12 +414,12 @@ yay -S caido
 
 # Hacking tools
 
-yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad
+yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope
 
 <!-- tar -xvf /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz -->
 
-certipy
+certipy bloodhound-ce
 
 # Temp things to remove
 
-anydesk-bin
+nothing
