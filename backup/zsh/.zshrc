@@ -5,6 +5,7 @@
 
 # Oh My Zsh Path
 export ZSH="${HOME}/.oh-my-zsh"
+export PATH="${HOME}/.local/bin:${PATH}"
 
 # Set Theme (Minimalist cyber two-line prompt, zero emojis)
 ZSH_THEME=""

@@ -15,6 +15,10 @@ hl.bind("SUPER + ALT + M", hl.dsp.window.move({ workspace = "special:music" }))
 -- Move active window out of special workspace to current normal workspace
 hl.bind("SUPER + ALT + Down", hl.dsp.window.move({ workspace = "e+0" }))
 
+-- Swap active workspace with next or previous workspace
+hl.bind("CTRL + SUPER + ALT + Right", hl.dsp.exec_cmd("/home/diamond/.config/hypr/scripts/workspace-ctl.py swap-next"))
+hl.bind("CTRL + SUPER + ALT + Left", hl.dsp.exec_cmd("/home/diamond/.config/hypr/scripts/workspace-ctl.py swap-prev"))
+
 -- Windscribe VPN: Launch as floating without forced dimensions
 -- Allows the app to dynamically autosize between collapsed (350x284) and expanded (350x600)
 -- without graphical glitches.
