@@ -376,7 +376,7 @@ yay -S spotify
 yay -S timeshift
 
 ## GithubDesktop
-yay -S github-desktop
+yay -S github-desktop github-cli
 
 ## Windscribe
 yay -S windscribe-v2-bin
@@ -422,4 +422,4 @@ certipy bloodhound-ce
 
 # Temp things to remove
 
-nothing
+Make sure to remove backup directories that had been created through hyprdark and shell while in development
