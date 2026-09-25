@@ -66,7 +66,7 @@ fi
 
 # Prepare balanced split targeting largest window to form an even 2x2 grid
 if [ -x "/home/diamond/.config/hypr/scripts/workspace-ctl.py" ]; then
-    /home/diamond/.config/hypr/scripts/workspace-ctl.py prepare-split >/dev/null 2>&1 || true
+    /home/diamond/.config/hypr/scripts/auto-arranger.py prepare >/dev/null 2>&1 || true
 fi
 
 exec kitty --directory "$target_dir"

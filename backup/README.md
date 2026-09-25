@@ -12,8 +12,8 @@ This folder contains a complete backup of all custom desktop, terminal, shell, w
 | **Wallpaper Timer** | `systemd/user/*` | `~/.config/systemd/user/` | Systemd service & timer automatically rotating wallpapers every 15 minutes (`caelestia wallpaper -r`) |
 | **Zsh** | `zsh/.zshrc` | `~/.zshrc` | Cyber high-contrast prompt, execution timer, directory fill hairline, case-insensitive tab completion, Alt+Backspace path segment deletion (`WORDCHARS` without `/`), clean prompt newline spacing on Ctrl+C & command completion, word jumping, pentest aliases |
 | **Kitty** | `kitty/kitty.conf`<br>`kitty/theme.conf` | `~/.config/kitty/` | Font size 13.0, padding, cursor, cyber colors, Zsh shell integration |
-| **Caelestia** | `caelestia/shell.json`<br>`caelestia/cli.json`<br>`caelestia/hypr-vars.lua`<br>`caelestia/hypr-user.lua`<br>`caelestia/monitors/` | `~/.config/caelestia/` | Audio status icon enabled, bar settings, terminal dynamic color disable (`enableTerm: false`), context-aware terminal keybinds (`SUPER+Space` / `SUPER+Return` and `SUPER+T`), editor (`SUPER+C` -> Sublime `subl`), swapped browser (`SUPER+R`) & todo (`SUPER+W`), special workspace window movement (`SUPER+ALT+S/W/D/M`), workspace swapping & shifting shortcuts, user overrides (Windscribe autosizing float) |
-| **Hyprland** | `hypr/*`<br>`hypr/scripts/launch-terminal.sh`<br>`hypr/scripts/launch-app.sh`<br>`hypr/scripts/workspace-ctl.py` | `~/.config/hypr/` | Full Hyprland setup, `hyprland.lua`, `hyprland-gui.lua`, `scheme/`, `keybinds.lua`, `rules.lua` (with floating app rules), `launch-terminal.sh` (inherits active terminal CWD + balanced auto-arranger), `launch-app.sh` (balanced app launcher wrapper), `workspace-ctl` (zero-rearrangement workspace swapping & shifting via native compositor container `change_id`, balanced 2x2 grid auto-arranger, and workspace rebalancer), seamless direct switching between special workspaces |
+| **Caelestia** | `caelestia/shell.json`<br>`caelestia/cli.json`<br>`caelestia/hypr-vars.lua`<br>`caelestia/hypr-user.lua`<br>`caelestia/monitors/` | `~/.config/caelestia/` | Audio status icon enabled, bar settings, terminal dynamic color disable (`enableTerm: false`), context-aware terminal keybinds (`SUPER+Space` / `SUPER+Return` and `SUPER+T`), editor (`SUPER+C` -> Sublime `subl`), swapped browser (`SUPER+R`) & todo (`SUPER+W`), special workspace window movement (`SUPER+ALT+S/W/D/M`), user overrides (Windscribe autosizing float) |
+| **Hyprland** | `hypr/*`<br>`hypr/scripts/launch-terminal.sh`<br>`hypr/scripts/launch-app.sh`<br>`hypr/scripts/auto-arranger.py` | `~/.config/hypr/` | Full Hyprland setup, `hyprland.lua`, `hyprland-gui.lua`, `scheme/`, `keybinds.lua`, `rules.lua` (with floating app rules), `launch-terminal.sh` (inherits active terminal CWD + balanced auto-arranger), `launch-app.sh` (balanced app launcher wrapper), `auto-arranger.py` (balanced 2x2 grid auto-arranger and workspace rebalancer), seamless direct switching between special workspaces |
 | **Spotify** | `spotify/spotify-flags.conf` | `~/.config/spotify-flags.conf` | Ozone Wayland flags (`UseOzonePlatform`, `wayland`) for crisp, non-pixelated native rendering |
 | **SDDM Login** | `sddm/sugar-candy/`<br>`sddm/install-theme.sh` | `/usr/share/sddm/themes/sugar-candy/`<br>`/etc/sddm.conf.d/theme.conf` | Centered login credentials, pure black background with randomized skull animations (inner 60% focus, 5s interval) |
 | **GRUB Bootloader** | `grub/Matrix/`<br>`grub/install-theme.sh` | `/boot/grub/themes/Matrix/`<br>`/etc/default/grub` | Matrix Morpheus "Red Pill vs Blue Pill" theme (Arch Linux Red vs Windows Blue), 1080p graphics, clean 2-entry toggle |
@@ -21,28 +21,16 @@ This folder contains a complete backup of all custom desktop, terminal, shell, w
 
 ---
 
-## Workspace Management & Shortcuts
+## Window Management & Shortcuts
 
-### 1. Workspace Swapping (Zero Re-arrangement)
-Swaps two workspaces instantly at the compositor container level using native `change_id`. **Preserves 100% of window coordinates, splits, aspect ratios, and custom 2x2 grids without moving any windows.**
-- `CTRL + SUPER + ALT + Right` : Swap current workspace with next workspace (ID + 1)
-- `CTRL + SUPER + ALT + Left` : Swap current workspace with previous workspace (ID - 1)
-- CLI: `workspace-ctl swap <ws1> <ws2>`
-
-### 2. Workspace Shifting (Pushing)
-Pushes the active workspace to a new slot while cleanly cascading and shifting subsequent workspaces outward.
-- `CTRL + SUPER + ALT + SHIFT + Right` or `CTRL + SUPER + ALT + Page_Down` : Shift workspace forward (+1), pushing subsequent workspaces outward
-- `CTRL + SUPER + ALT + SHIFT + Left` or `CTRL + SUPER + ALT + Page_Up` : Shift workspace backward (-1), pushing subsequent workspaces outward
-- CLI: `workspace-ctl shift <src> <dest>`, `workspace-ctl shift-next`, `workspace-ctl shift-prev`
-
-### 3. Balanced Window Auto-Arranger (2x2 Grid)
+### Balanced Window Auto-Arranger (2x2 Grid)
 Whenever opening a new terminal (`SUPER + Space`, `SUPER + Return`, `SUPER + T`) or application (`SUPER + R`, `SUPER + C`, etc.), the auto-arranger targets the **largest tiled window on screen** by area and sets the optimal split direction:
 - 1 window: 100% (fullscreen)
 - 2 windows: 50% / 50% (side-by-side)
 - 3 windows: 25% top-left, 25% bottom-left, 50% right
 - 4 windows: **25% top-left, 25% bottom-left, 25% top-right, 25% bottom-right (Equal 2x2 Grid)**
 - Eliminates the dwindling spiral (1/2 → 1/4 → 1/8 → 1/16).
-- **Manual Workspace Balance Shortcut**: `SUPER + ALT + B` immediately re-tiles any messy workspace into a clean, symmetrical grid (`workspace-ctl balance`).
+- **Manual Workspace Balance Shortcut**: `SUPER + ALT + B` immediately re-tiles any messy workspace into a clean, symmetrical grid (`auto-arranger.py balance`).
 
 ---
 

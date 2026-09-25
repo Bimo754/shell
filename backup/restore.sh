@@ -80,11 +80,7 @@ fi
 cp -rf "${SCRIPT_DIR}/hypr/"* "${HOME}/.config/hypr/"
 [ -f "${HOME}/.config/hypr/scripts/launch-terminal.sh" ] && chmod +x "${HOME}/.config/hypr/scripts/launch-terminal.sh"
 [ -f "${HOME}/.config/hypr/scripts/launch-app.sh" ] && chmod +x "${HOME}/.config/hypr/scripts/launch-app.sh"
-if [ -f "${HOME}/.config/hypr/scripts/workspace-ctl.py" ]; then
-    chmod +x "${HOME}/.config/hypr/scripts/workspace-ctl.py"
-    mkdir -p "${HOME}/.local/bin"
-    ln -sf "${HOME}/.config/hypr/scripts/workspace-ctl.py" "${HOME}/.local/bin/workspace-ctl"
-fi
+[ -f "${HOME}/.config/hypr/scripts/auto-arranger.py" ] && chmod +x "${HOME}/.config/hypr/scripts/auto-arranger.py"
 success "Restored ~/.config/hypr/ (hyprland.lua, hyprland-gui.lua, rules.lua, scheme/, scripts/, etc.)"
 
 # 5. Restore Wallpapers Directory

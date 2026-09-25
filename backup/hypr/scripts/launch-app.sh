@@ -7,7 +7,7 @@
 # ==============================================================================
 
 if [ -x "/home/diamond/.config/hypr/scripts/workspace-ctl.py" ]; then
-    /home/diamond/.config/hypr/scripts/workspace-ctl.py prepare-split >/dev/null 2>&1 || true
+    /home/diamond/.config/hypr/scripts/auto-arranger.py prepare >/dev/null 2>&1 || true
 fi
 
 exec "$@"
