@@ -1,8 +1,8 @@
 return {
-    terminal               = "kitty",
+    terminal               = "/home/diamond/.config/hypr/scripts/launch-terminal.sh",
     browser                = "brave",
     fileExplorer           = "dolphin",
-    kbTerminal             = "SUPER + Return",
+    kbTerminal             = { "SUPER + Return", "SUPER + Space" },
     kbToggleWindowFloating = "SUPER + V",
     kbClipboard            = "SUPER + SHIFT + V",
 }

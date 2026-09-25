@@ -78,7 +78,8 @@ if [ -d "${HOME}/.config/hypr" ] && [ "$(ls -A "${HOME}/.config/hypr" 2>/dev/nul
     warn "Existing Hypr config backed up to ~/.config/hypr.bak.${TIMESTAMP}"
 fi
 cp -rf "${SCRIPT_DIR}/hypr/"* "${HOME}/.config/hypr/"
-success "Restored ~/.config/hypr/ (hyprland.lua, hyprland-gui.lua, rules.lua, scheme/, etc.)"
+[ -f "${HOME}/.config/hypr/scripts/launch-terminal.sh" ] && chmod +x "${HOME}/.config/hypr/scripts/launch-terminal.sh"
+success "Restored ~/.config/hypr/ (hyprland.lua, hyprland-gui.lua, rules.lua, scheme/, scripts/, etc.)"
 
 # 5. Restore Wallpapers Directory
 if [ -d "${SCRIPT_DIR}/wallpapers" ]; then

@@ -46,20 +46,26 @@ bindkey "^[b"     backward-word         # Alt+Left (Kitty default)
 bindkey "^[f"     forward-word          # Alt+Right (Kitty default)
 bindkey "^[[1;5A" up-line-or-history     # Ctrl+Up
 bindkey "^[[1;5B" down-line-or-history   # Ctrl+Down
+
+# Path & subpath deletion with Alt+Backspace and Ctrl+Backspace
+# Removing '/' from WORDCHARS ensures backward-kill-word stops at path delimiters
+WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+bindkey "^[^?"    backward-kill-word     # Alt+Backspace
+bindkey "^[^H"    backward-kill-word     # Alt+Backspace (alternative)
 bindkey "^H"      backward-kill-word     # Ctrl+Backspace
+bindkey "^W"      backward-kill-word     # Ctrl+W
 bindkey "^[[3;5~" kill-word              # Ctrl+Delete
 
 # --- Modern Cyber Prompt with Hairlines, Execution Timer & Line Fill ---
 zmodload zsh/datetime
 setopt PROMPT_SUBST
 
+_first_prompt=1
 _cmd_start_time=""
-_cmd_ran=""
 _last_dur_str=""
 
 preexec() {
     _cmd_start_time=$EPOCHREALTIME
-    _cmd_ran=1
 }
 
 _build_prompt() {
@@ -82,10 +88,11 @@ _build_prompt() {
     local pad=""
     integer term_width=${COLUMNS:-80}
 
-    # 2. Line break after command output
-    if [[ -n "$_cmd_ran" ]]; then
+    # 2. Line break before prompt (clean spacing after commands, Ctrl+C, or blank lines)
+    if [[ -z "$_first_prompt" ]]; then
         print ""
-        _cmd_ran=""
+    else
+        _first_prompt=""
     fi
 
     # 3. Directory path
@@ -181,12 +188,19 @@ alias l='ls -CF --color=auto'
 alias ..='cd ..'
 alias ...='cd ../..'
 clear() {
-    _cmd_ran=""
+    _first_prompt=1
     _cmd_start_time=""
     _last_dur_str=""
     command clear "$@"
 }
 alias cls='clear'
+
+# Reset prompt newline when clearing via Ctrl+L
+clear-screen-and-reset() {
+    _first_prompt=1
+    zle .clear-screen
+}
+zle -N clear-screen clear-screen-and-reset
 
 # Quick Pentest Helpers
 alias serve='python3 -m http.server 8000'

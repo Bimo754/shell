@@ -419,3 +419,7 @@ yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad
 <!-- tar -xvf /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz -->
 
 certipy
+
+# Temp things to remove
+
+anydesk-bin
