@@ -79,6 +79,7 @@ if [ -d "${HOME}/.config/hypr" ] && [ "$(ls -A "${HOME}/.config/hypr" 2>/dev/nul
 fi
 cp -rf "${SCRIPT_DIR}/hypr/"* "${HOME}/.config/hypr/"
 [ -f "${HOME}/.config/hypr/scripts/launch-terminal.sh" ] && chmod +x "${HOME}/.config/hypr/scripts/launch-terminal.sh"
+[ -f "${HOME}/.config/hypr/scripts/launch-app.sh" ] && chmod +x "${HOME}/.config/hypr/scripts/launch-app.sh"
 if [ -f "${HOME}/.config/hypr/scripts/workspace-ctl.py" ]; then
     chmod +x "${HOME}/.config/hypr/scripts/workspace-ctl.py"
     mkdir -p "${HOME}/.local/bin"
