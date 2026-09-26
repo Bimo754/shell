@@ -423,3 +423,5 @@ certipy bloodhound-ce
 # Temp things to remove
 
 Make sure to remove backup directories that had been created through hyprdark and shell while in development
+
+fps drop in special menus

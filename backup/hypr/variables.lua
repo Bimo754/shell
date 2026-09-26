@@ -41,11 +41,13 @@ return {
     singleWindowGapsOut        = 20,
 
     -- Window styling
-    windowOpacity              = 0.95,
-    windowRounding             = 15,
-    windowBorderSize           = 1,
-    activeWindowBorderColour   = "rgba(" .. scheme.primary .. "e6)",
-    inactiveWindowBorderColour = "rgba(" .. scheme.onSurfaceVariant .. "11)",
+    windowOpacity                       = 0.95,
+    windowRounding                      = 15,
+    windowBorderSize                    = 1,
+    activeWindowBorderColour            = "rgba(" .. scheme.primary .. "e6)",
+    inactiveWindowBorderColour          = "rgba(" .. scheme.onSurfaceVariant .. "11)",
+    maximizedWindowBorderSize           = 2,
+    maximizedWindowBorderColour         = "rgba(" .. (scheme.peach or scheme.tertiary or "decca5") .. "ff) rgba(" .. (scheme.primary or "c6c6c6") .. "ff) 45deg",
 
     -- Misc
     volumeStep                 = 10,

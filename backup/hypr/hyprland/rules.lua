@@ -42,6 +42,13 @@ local todo_app_tag = "todo_app"
 -- Apply default opacity to all windows except fullscreen
 hl.window_rule({ match = { fullscreen = false }, opacity = vars.windowOpacity .. " override" })
 
+-- Highlight maximized windows (SUPER+F mode) to distinguish them from standard tiling
+hl.window_rule({
+    match        = { fullscreen_state_internal = 1 },
+    border_color = vars.maximizedWindowBorderColour,
+    border_size  = vars.maximizedWindowBorderSize,
+})
+
 -- Center all floating windows except xwayland windows (xwayland popups count as windows)
 hl.window_rule({ match = { float = true, xwayland = false }, center = true })
 
