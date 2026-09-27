@@ -414,7 +414,7 @@ yay -S caido
 
 # Hacking tools
 
-yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope
+yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn
 
 <!-- tar -xvf /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz -->
 
