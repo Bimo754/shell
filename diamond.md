@@ -399,6 +399,9 @@ sudo systemctl enable --now waydroid-container
 ## Obsidian
 yay -S obsidian
 
+## Virtualbox
+sudo pacman -S virtualbox virtualbox-host-dkms
+
 ## BlackArch repo
 curl -O https://blackarch.org/strap.sh
 echo 00688950aaf5e5804d2abebb8d3d3ea1d28525ed strap.sh | sha1sum -c
@@ -414,9 +417,10 @@ yay -S caido
 
 # Hacking tools
 
-yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r
+yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r docker docker-compose docker-buildx bc eaphammer ghidra
 
 sudo systemctl start --now httpd
+<!-- Find a way to remove Remmina from starting at the startup -->
 
 <!-- tar -xvf /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz -->
 

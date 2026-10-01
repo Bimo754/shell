@@ -39,6 +39,13 @@ local todo_app_tag = "todo_app"
 ---- Window rules ----
 ----------------------
 
+-- Ignore maximize requests from apps (prevents opening windows from forcing maximized / focus mode)
+hl.window_rule({
+    name           = "suppress-maximize-events",
+    match          = { class = ".*" },
+    suppress_event = "maximize",
+})
+
 -- Apply default opacity to all windows except fullscreen
 hl.window_rule({ match = { fullscreen = false }, opacity = vars.windowOpacity .. " override" })
 
