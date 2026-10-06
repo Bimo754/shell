@@ -99,7 +99,16 @@ if [ -f "${SCRIPT_DIR}/spotify/spotify-flags.conf" ]; then
     success "Restored ~/.config/spotify-flags.conf (crisp native Wayland Spotify)"
 fi
 
-# 7. Restore 15m Wallpaper Rotation Service & Timer
+# 7. Restore ZAP Proxy HiDPI & JVM Flags
+if [ -f "${SCRIPT_DIR}/zaproxy/.ZAP_JVM.properties" ]; then
+    info "Restoring ZAP Proxy JVM properties (~/.ZAP/.ZAP_JVM.properties)..."
+    mkdir -p "${HOME}/.ZAP"
+    cp -f "${SCRIPT_DIR}/zaproxy/.ZAP_JVM.properties" "${HOME}/.ZAP/.ZAP_JVM.properties"
+    ln -sfn "${HOME}/.ZAP/.ZAP_JVM.properties" "${HOME}/.config/zaproxy-flags.conf"
+    success "Restored ~/.ZAP/.ZAP_JVM.properties (crisp non-pixelated HiDPI ZAP Proxy)"
+fi
+
+# 8. Restore 15m Wallpaper Rotation Service & Timer
 if [ -d "${SCRIPT_DIR}/systemd/user" ]; then
     info "Restoring 15-minute Wallpaper Rotation systemd timer..."
     mkdir -p "${HOME}/.config/systemd/user"
@@ -111,14 +120,14 @@ if [ -d "${SCRIPT_DIR}/systemd/user" ]; then
     fi
 fi
 
-# 8. Live reload if in Hyprland
+# 9. Live reload if in Hyprland
 if pgrep -x "Hyprland" >/dev/null 2>&1; then
     info "Reloading Hyprland..."
     hyprctl reload 2>/dev/null || true
     success "Hyprland reloaded successfully."
 fi
 
-# 9. Live reload Caelestia Shell if running
+# 10. Live reload Caelestia Shell if running
 if command -v caelestia >/dev/null 2>&1; then
     if pgrep -f "quickshell" >/dev/null 2>&1 || pgrep -f "caelestia shell" >/dev/null 2>&1; then
         info "Restarting Caelestia Shell daemon..."
@@ -128,7 +137,7 @@ if command -v caelestia >/dev/null 2>&1; then
     fi
 fi
 
-# 10. Restore SDDM DedSec Skull Theme
+# 11. Restore SDDM DedSec Skull Theme
 if [ -d "${SCRIPT_DIR}/sddm" ]; then
     info "Restoring custom SDDM DedSec Skull theme..."
     if sudo -n true 2>/dev/null || [ "$EUID" -eq 0 ]; then
@@ -141,7 +150,7 @@ if [ -d "${SCRIPT_DIR}/sddm" ]; then
     fi
 fi
 
-# 11. Restore Matrix Morpheus GRUB Theme
+# 12. Restore Matrix Morpheus GRUB Theme
 if [ -d "${SCRIPT_DIR}/grub" ]; then
     info "Restoring Matrix Morpheus GRUB theme (Red Pill vs Blue Pill)..."
     if sudo -n true 2>/dev/null || [ "$EUID" -eq 0 ]; then

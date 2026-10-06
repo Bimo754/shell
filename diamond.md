@@ -232,6 +232,7 @@ caelestia install
 - Systemd user timer configured to rotate wallpapers every 15 minutes (`wallpaper-rotate.timer`)
 - Wallpapers backed up from `~/Pictures/Wallpapers/`
 - Fixed Spotify pixelation with Ozone Wayland flags (`~/.config/spotify-flags.conf`)
+- Fixed ZAP Proxy pixelation with XWayland zero-scaling & FlatLaf HiDPI flags (`~/.ZAP/.ZAP_JVM.properties`)
 
 > Scheme default (dynamic)
 
@@ -417,12 +418,29 @@ yay -S caido
 
 # Hacking tools
 
-yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r docker docker-compose docker-buildx bc eaphammer ghidra
+## Installation
 
+```sh
+yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r docker docker-compose docker-buildx bc eaphammer ghidra fetch-git enum4linux zaproxy
 sudo systemctl start --now httpd
+```
+
+## Post-installation commands
+
+```sh
+# Wireshark setup
+sudo usermod -aG wireshark $USER
+sudo chgrp wireshark /usr/bin/dumpcap
+sudo chmod 750 /usr/bin/dumpcap
+sudo setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
+# To run wireshark
+newgrp wireshark
+# then type wireshark
+```
+<!-- tar -xvf /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz -->
 <!-- Find a way to remove Remmina from starting at the startup -->
 
-<!-- tar -xvf /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz -->
+## To install
 
 certipy bloodhound-ce
 
