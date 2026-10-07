@@ -232,7 +232,6 @@ caelestia install
 - Systemd user timer configured to rotate wallpapers every 15 minutes (`wallpaper-rotate.timer`)
 - Wallpapers backed up from `~/Pictures/Wallpapers/`
 - Fixed Spotify pixelation with Ozone Wayland flags (`~/.config/spotify-flags.conf`)
-- Fixed ZAP Proxy pixelation with XWayland zero-scaling & FlatLaf HiDPI flags (`~/.ZAP/.ZAP_JVM.properties`)
 
 > Scheme default (dynamic)
 
@@ -421,7 +420,7 @@ yay -S caido
 ## Installation
 
 ```sh
-yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r docker docker-compose docker-buildx bc eaphammer ghidra fetch-git enum4linux zaproxy
+yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r docker docker-compose docker-buildx bc eaphammer ghidra fetch-git enum4linux zaproxy openbsd-netcat
 sudo systemctl start --now httpd
 ```
 

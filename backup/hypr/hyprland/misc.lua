@@ -20,9 +20,6 @@ hl.config({
         background_color             = "rgb(" .. scheme.surfaceContainer .. ")",
     },
 
-    xwayland = {
-        force_zero_scaling           = true,
-    },
 
     debug = {
         error_position = 1
