@@ -420,7 +420,7 @@ yay -S caido
 ## Installation
 
 ```sh
-yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r docker docker-compose docker-buildx bc eaphammer ghidra fetch-git enum4linux zaproxy openbsd-netcat
+yay -S seclists wireshark-qt feroxbuster dirsearch ffuf impacket bloodyad villian penelope openvpn remmina freerdp ligolo-ng apache sqlmap sublist3r docker docker-compose docker-buildx bc eaphammer ghidra fetch-git enum4linux zaproxy openbsd-netcat metasploit wpscan vulnapi php
 sudo systemctl start --now httpd
 ```
 
@@ -448,3 +448,10 @@ certipy bloodhound-ce
 Make sure to remove backup directories that had been created through hyprdark and shell while in development
 
 fps drop in special menus
+
+```sh
+yay -S eclipse-mat
+sudo pacman -Sy --needed opencl-headers cuda
+```
+
+
